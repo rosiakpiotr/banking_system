@@ -23,7 +23,7 @@ int validateNameSurname(const char *input)
 {
     if (!input)
         return 0;
-    while (*input)
+    while (*input && *input != '\n')
         if (!isalpha(*input++))
             return 0;
     return 1;

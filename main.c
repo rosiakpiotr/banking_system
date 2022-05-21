@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "functions.h"
 #include "types.h"
@@ -7,7 +8,7 @@
 
 int main()
 {
-	int result;
+	char *line;
 	int option;
 	while (1)
 	{
@@ -22,16 +23,12 @@ int main()
 		printf("7. Quit\n");
 		printf("Type in option number:");
 
-		result = scanf("%d", &option);
-		if (result == EOF)
+		line = readline();
+		if (!line)
 			break;
-		else if (result != 1)
-		{
-			printf("Invaild input.\n");
-			clrInBufScanf();
-			continue;
-		}
-
+		option = strtol(line, NULL, 10);
+		free(line);
+		line = NULL;
 		switch (option)
 		{
 		case 1:
@@ -43,23 +40,27 @@ int main()
 			char PESEL[11 + 1];
 			printf("New account creator:\n");
 			printf("Please fill customer data below.\n");
-			// do
-			// {
-			// 	printf("Name:");
-			// 	result = scanf("%20s", name);
-			// 	if (!result)
-			// 		clrInBufScanf();
-			// } while (!validateNameSurname(name));
-			validatedInput("Name", 20, name, validateNameSurname);
+			do
+			{
+				printf("Name:");
+				free(line);
+				line = NULL;
+			} while ((line = readline()) != NULL && !validateNameSurname(line));
+			memcpy(name, line, 20 + 1);
+			free(line);
+			line = NULL;
 		}
 		break;
 
 		default:
+			printf("Invaild input.\n");
 			break;
 		}
 
 		printf("\n\n\n");
 	}
+
+	free(line);
 	printf("Goodbye!\n");
 	return 0;
 }
