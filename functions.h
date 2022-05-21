@@ -1,28 +1,32 @@
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
 
+#include <stdlib.h>
+#include <ctype.h>
+#include "types.h"
+
 /* MODEL OPERATIONS */
 void listAll();
 
-generateAccNum();
+char *generateAccNum();
 
-createAcconut(data...);
+int saveAccount(const SCustomer *data);
 
-searchByAccNum(accnum);
-searchByName(name);
-searchBySurname(surname);
-searchByAddress(address);
-searchByPESEL(PESEL);
+// searchByAccNum(accnum);
+// searchByName(name);
+// searchBySurname(surname);
+// searchByAddress(address);
+// searchByPESEL(PESEL);
 
-makeDeposit(amount);
-withdraw(amount);
-bool transfer(from, to, amount);
+void makeDeposit(SCustomer *customer, double amount);
+int withdraw(SCustomer *customer, double amount);
+int transfer(SCustomer *from, SCustomer *to, double amount);
 
-canChangeBalanceBy(customer,amount);
+int canChangeBalanceBy(const SCustomer *customer, double amount);
 /* ------------ */
 
-int validateNameSurname(input);
-int validateAddress(input);
-int validatePESEL(input);
+int validateNameSurname(const char *input);
+int validateAddress(const char *input);
+int validatePESEL(const char *input);
 
-#endif FUNCTIONS_H
+#endif
