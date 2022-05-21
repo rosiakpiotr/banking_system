@@ -33,20 +33,31 @@ int main()
 		{
 		case 1:
 		{
-			char accountNumber[20 + 1];
-			char name[20 + 1];
-			char surname[20 + 1];
-			char address[25 + 1];
-			char PESEL[11 + 1];
+			char accountNumber[ACCOUNT_NUMBER_LENGTH + 1];
+			char name[NAME_LENGTH + 1];
+			char surname[SURNAME_LENGTH + 1];
+			char address[ADDRESS_LENGTH + 1];
+			char PESEL[PESEL_LENGTH + 1];
 			printf("New account creator:\n");
 			printf("Please fill customer data below.\n");
-			do
-			{
-				printf("Name:");
-				free(line);
-				line = NULL;
-			} while ((line = readline()) != NULL && !validateNameSurname(line));
-			memcpy(name, line, 20 + 1);
+
+			line = validatedInput("Name", NAME_LENGTH, validateNameSurname);
+			memcpy(name, line, NAME_LENGTH + 1);
+			free(line);
+			line = NULL;
+
+			line = validatedInput("Surname", SURNAME_LENGTH, validateNameSurname);
+			memcpy(surname, line, SURNAME_LENGTH + 1);
+			free(line);
+			line = NULL;
+
+			line = validatedInput("Address", ADDRESS_LENGTH, validateAddress);
+			memcpy(address, line, ADDRESS_LENGTH + 1);
+			free(line);
+			line = NULL;
+
+			line = validatedInput("PESEL", PESEL_LENGTH, validatePESEL);
+			memcpy(PESEL, line, PESEL_LENGTH + 1);
 			free(line);
 			line = NULL;
 		}

@@ -3,6 +3,8 @@
 
 #include <stdlib.h>
 #include <ctype.h>
+#include <string.h>
+#include "utility.h"
 #include "types.h"
 
 /* MODEL OPERATIONS */
@@ -24,6 +26,9 @@ int transfer(SCustomer *from, SCustomer *to, double amount);
 
 int canChangeBalanceBy(const SCustomer *customer, double amount);
 /* ------------ */
+
+char *rmNewline(char *line);
+char *validatedInput(const char *prompt, size_t maxLen, int (*validator)(const char *input));
 
 int validateNameSurname(const char *input);
 int validateAddress(const char *input);
