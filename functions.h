@@ -8,27 +8,18 @@
 #include "types.h"
 #include "constants.h"
 
-/* MODEL OPERATIONS */
 void listAll();
-
-char *generateAccNum();
+void printCustomer(const SCustomer *customer);
 
 int custCmp(const SCustomer *c1, const SCustomer *c2);
 int alreadyExists(const SCustomer *cust);
 int findByName(const char *name, SCustomer *found);
-
-// searchByAccNum(accnum);
-// searchByName(name);
-// searchBySurname(surname);
-// searchByAddress(address);
-// searchByPESEL(PESEL);
 
 void makeDeposit(SCustomer *customer, double amount);
 int withdraw(SCustomer *customer, double amount);
 int transfer(SCustomer *from, SCustomer *to, double amount);
 
 int canChangeBalanceBy(const SCustomer *customer, double amount);
-/* ------------ */
 
 void getNewCustomerData(SCustomer *newCustomer);
 
@@ -42,8 +33,6 @@ int validateNameSurname(const char *input);
 int validateAddress(const char *input);
 int validatePESEL(const char *input);
 
-/* FILE OPERATIONS */
 int saveNewCustomer(const SCustomer *customer);
-/* ------------ */
 
 #endif

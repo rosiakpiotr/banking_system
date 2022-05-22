@@ -1,17 +1,5 @@
 #include "functions.h"
 
-void listAll() {}
-
-char *generateAccNum() { return NULL; }
-
-int saveAccount(const SCustomer *data) { return 0; }
-
-// searchByAccNum(accnum);
-// searchByName(name);
-// searchBySurname(surname);
-// searchByAddress(address);
-// searchByPESEL(PESEL);
-
 void makeDeposit(SCustomer *customer, double amount) {}
 int withdraw(SCustomer *customer, double amount) { return 0; }
 int transfer(SCustomer *from, SCustomer *to, double amount) { return 0; }
@@ -169,4 +157,33 @@ int saveNewCustomer(const SCustomer *customer)
     int result = fwrite(customer, sizeof(SCustomer), 1, fp);
     fclose(fp);
     return result;
+}
+
+void listAll()
+{
+    printf("N\tNAME\tSURNAME\tADDRESS\tPESEL\t\tACCOUNT NUMBER\n");
+    FILE *fp;
+    fp = fopen(DB_FILENAME, "rb");
+    if (!fp)
+        return;
+    SCustomer custFromFile;
+    int custNum = 1;
+    while (fread(&custFromFile, sizeof(SCustomer), 1, fp) == 1)
+    {
+        printf("%d\t", custNum);
+        printCustomer(&custFromFile);
+        printf("\n");
+        custNum++;
+    }
+    fclose(fp);
+}
+
+void printCustomer(const SCustomer *customer)
+{
+    printf("%s\t%s\t%s\t%s\t%s",
+           customer->name,
+           customer->surname,
+           customer->address,
+           customer->PESEL,
+           customer->accountNumber);
 }

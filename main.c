@@ -48,6 +48,12 @@ int main()
 		}
 		break;
 
+		case 2:
+		{
+			listAll();
+		}
+		break;
+
 		case 7:
 			break;
 
