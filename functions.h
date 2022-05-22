@@ -12,10 +12,10 @@ void listAll();
 void printHeader();
 void printCustomer(const SCustomer *customer);
 
+int custCmp(const SCustomer *c1, const SCustomer *c2);
+
 int alreadyExists(const SCustomer *cust);
 
-// account number, name, surname, address,
-// identification number
 int findInDb(SCustomer *found, const void *target, isThatIt comparator);
 int nameFind(const SCustomer *cust, const void *target);
 int surnameFind(const SCustomer *cust, const void *target);
@@ -35,5 +35,6 @@ int validatePESEL(const char *input);
 int validateAccNum(const char *input);
 
 int saveNewCustomer(const SCustomer *customer);
+int updateCustomer(const SCustomer *customer);
 
 #endif

@@ -7,6 +7,11 @@ int transfer(SCustomer *from, SCustomer *to, double amount) { return 0; }
 int canChangeBalanceBy(const SCustomer *customer, double amount) { return 0; }
 /* ------------ */
 
+int custCmp(const SCustomer *c1, const SCustomer *c2)
+{
+    return strcmp(c1->accountNumber, c2->accountNumber) == 0;
+}
+
 int validateNameSurname(const char *input)
 {
     if (!input)
@@ -47,7 +52,7 @@ int validateAccNum(const char *input)
         }
         ++count;
     }
-    return count == 9;
+    return count;
 }
 
 int findInDb(SCustomer *found, const void *target, isThatIt comparator)
@@ -112,12 +117,48 @@ int saveNewCustomer(const SCustomer *customer)
     return result;
 }
 
+int updateCustomer(const SCustomer *customer)
+{
+    if (!alreadyExists(customer))
+        return 0;
+
+    FILE *fp;
+    fp = fopen(DB_FILENAME, "rb+");
+    if (!fp)
+    {
+        perror("Error during initialization of database file.");
+        return 0;
+    }
+    SCustomer custFromFile;
+    int pos = 0, result = 0;
+    while (fread(&custFromFile, sizeof(SCustomer), 1, fp) == 1)
+    {
+        if (custCmp(customer, &custFromFile))
+        {
+            if (fseek(fp, pos * sizeof(SCustomer), SEEK_SET) == 0)
+            {
+                result = fwrite(customer, sizeof(SCustomer), 1, fp);
+            }
+            else
+            {
+                perror("Error seeking into database file.");
+            }
+            break;
+        }
+        ++pos;
+    }
+    fclose(fp);
+    return result;
+}
+
 void listAll()
 {
     FILE *fp;
     fp = fopen(DB_FILENAME, "rb");
     if (!fp)
         return;
+
+    printHeader();
     SCustomer custFromFile;
     int custNum = 1;
     while (fread(&custFromFile, sizeof(SCustomer), 1, fp) == 1)
@@ -132,19 +173,16 @@ void listAll()
 
 void printHeader()
 {
-    printf("N\tNAME\tSURNAME\tADDRESS\tPESEL\t\tACCOUNT NUMBER\n");
+    printf("N\tNAME\tSURNAME\tADDRESS\tPESEL\t\tACCOUNT NUMBER\tBALANCE\n");
 }
 
 void printCustomer(const SCustomer *customer)
 {
-    printf("%s\t%s\t%s\t%s\t%s",
+    printf("%s\t%s\t%s\t%s\t%s\t%.2f",
            customer->name,
            customer->surname,
            customer->address,
            customer->PESEL,
-           customer->accountNumber);
-}
-
-void enterSearchMode()
-{
+           customer->accountNumber,
+           customer->balance);
 }

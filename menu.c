@@ -5,6 +5,7 @@ void menuAddNewCustomer()
     SCustomer newCustomer;
     getNewCustomerData(&newCustomer);
     sprintf(newCustomer.accountNumber, "%lu", hash(newCustomer.PESEL));
+    newCustomer.balance = 20;
     int result = saveNewCustomer(&newCustomer);
     if (result == 1)
     {
@@ -43,9 +44,8 @@ void getNewCustomerData(SCustomer *newCustomer)
     line = NULL;
 }
 
-void menuSearch()
+int menuSearch(SCustomer *found)
 {
-    printf("\n\n");
     printf("Search for a customer by:\n");
     printf("1. Name\n");
     printf("2. Surname\n");
@@ -55,30 +55,31 @@ void menuSearch()
     printf("6. Return\n");
 
     int option = getInputNumInRangeInt("Choice", 1, 6);
-
-    SCustomer customer;
+    int result = 0;
     switch (option)
     {
     case 1:
-        menuSearchBy("Name", NAME_LENGTH, validateNameSurname, nameFind, &customer);
+        result = menuSearchBy("Name", NAME_LENGTH, validateNameSurname, nameFind, found);
         break;
 
     case 2:
-        menuSearchBy("Surname", SURNAME_LENGTH, validateNameSurname, surnameFind, &customer);
+        result = menuSearchBy("Surname", SURNAME_LENGTH, validateNameSurname, surnameFind, found);
         break;
 
     case 3:
-        menuSearchBy("Address", ADDRESS_LENGTH, validateAddress, addressFind, &customer);
+        result = menuSearchBy("Address", ADDRESS_LENGTH, validateAddress, addressFind, found);
         break;
 
     case 4:
-        menuSearchBy("PESEL", PESEL_LENGTH, validatePESEL, PESELFind, &customer);
+        result = menuSearchBy("PESEL", PESEL_LENGTH, validatePESEL, PESELFind, found);
         break;
 
     case 5:
-        menuSearchBy("Account number", ACCOUNT_NUMBER_LENGTH, validateAccNum, accNumFind, &customer);
+        result = menuSearchBy("Account number", ACCOUNT_NUMBER_LENGTH, validateAccNum, accNumFind, found);
         break;
     }
+
+    return result;
 }
 
 int menuSearchBy(const char *byWhat, size_t maxInputLen, validator inputValidator, isThatIt searchComparator, SCustomer *found)
@@ -94,7 +95,7 @@ int menuSearchBy(const char *byWhat, size_t maxInputLen, validator inputValidato
     result = findInDb(found, field, searchComparator);
     if (result == 1)
     {
-        printf("Found customer(it will be selected for next operations):\n");
+        printf("Found customer:\n");
         printHeader();
         printf("1\t");
         printCustomer(found);
@@ -139,4 +140,91 @@ double getInputNumInRangeDouble(const char *prompt, double bottom, double upper)
         line = NULL;
     } while (num < bottom || num > upper);
     return num;
+}
+
+int menuMoneyTransfer()
+{
+    printf("Money transfer\n");
+    printf("You will be asked to search for customer FROM and TO.\n");
+
+    SCustomer from, to;
+    int result;
+
+    printf("\n");
+    printf("Select customer FROM.\n");
+    result = menuSearch(&from);
+    if (result != 1)
+    {
+        printf("Failed to select customer, aborting.\n");
+        return 0;
+    }
+
+    printf("\n");
+    printf("Select customer TO.\n");
+    result = menuSearch(&to);
+    if (result != 1)
+    {
+        printf("Failed to select customer, aborting.\n");
+        return 0;
+    }
+
+    if (custCmp(&from, &to) == 1)
+    {
+        printf("Can't transfer money to the same account, aborting.\n");
+        return 0;
+    }
+
+    printf("\n");
+    double amount = getInputNumInRangeDouble("Amount", 0, from.balance);
+
+    if (from.balance <= 0)
+    {
+        printf("Customer FROM has no money to transfer, aborting.\n");
+        return 0;
+    }
+
+    printf("\n\n");
+    printf("Are you sure you want to transfer %.2f?\n", amount);
+    printHeader();
+    printf("FROM\t");
+    printCustomer(&from);
+    printf("\nTO\t");
+    printCustomer(&to);
+    printf("\n\n");
+    int confirm = getInputNumInRangeInt("Type 1 to confirm 0 to abort", 0, 1);
+    int fail = 0;
+    if (confirm)
+    {
+        from.balance -= amount;
+        to.balance += amount;
+        if (fail || !updateCustomer(&from))
+        {
+            fail = 1;
+        }
+        if (fail || !updateCustomer(&to))
+        {
+            fail = 1;
+        }
+    }
+
+    if (fail)
+    {
+        printf("Failed to finalize transaction.\n");
+        printf("Customer's balances will remain unchanged.\n");
+        from.balance += amount;
+        to.balance -= amount;
+    }
+    else
+    {
+        printf("Transfer succesful.\n");
+    }
+
+    printf("\nCurrent state:\n");
+    printHeader();
+    printf("FROM\t");
+    printCustomer(&from);
+    printf("\nTO\t");
+    printCustomer(&to);
+
+    return fail;
 }

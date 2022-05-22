@@ -20,9 +20,9 @@ int main()
 		printf("5. Deposit\n");
 		printf("6. Withdraw\n");
 		printf("7. Quit\n");
-		printf("Type in option number:");
 
 		option = getInputNumInRangeInt("Option", 1, 7);
+		SCustomer dummy;
 		switch (option)
 		{
 		case 1:
@@ -34,9 +34,12 @@ int main()
 			break;
 
 		case 3:
-			menuSearch();
+			menuSearch(&dummy);
 			break;
 
+		case 4:
+			menuMoneyTransfer();
+			break;
 		default:
 			break;
 		}
