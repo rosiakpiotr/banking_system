@@ -9,11 +9,19 @@
 #include "constants.h"
 
 void listAll();
+void printHeader();
 void printCustomer(const SCustomer *customer);
 
-int custCmp(const SCustomer *c1, const SCustomer *c2);
 int alreadyExists(const SCustomer *cust);
-int findByName(const char *name, SCustomer *found);
+
+// account number, name, surname, address,
+// identification number
+int findInDb(SCustomer *found, const void *target, int (*isThatIt)(const SCustomer *cust, const void *target));
+int nameFind(const SCustomer *cust, const void *target);
+int surnameFind(const SCustomer *cust, const void *target);
+int addressFind(const SCustomer *cust, const void *target);
+int PESELFind(const SCustomer *cust, const void *target);
+int accNumFind(const SCustomer *cust, const void *target);
 
 void makeDeposit(SCustomer *customer, double amount);
 int withdraw(SCustomer *customer, double amount);

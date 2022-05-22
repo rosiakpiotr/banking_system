@@ -102,38 +102,16 @@ int validatePESEL(const char *input)
     }
     return count == 11;
 }
-
-int findByName(const char *name, SCustomer *found)
+int findInDb(SCustomer *found, const void *target, int (*isThatIt)(const SCustomer *cust, const void *target))
 {
     FILE *fp;
     fp = fopen(DB_FILENAME, "rb");
     if (!fp)
         return -1;
+    int result = 0;
     while (fread(found, sizeof(SCustomer), 1, fp) == 1)
     {
-        if (strcmp(name, found->name) == 0)
-            return 1;
-    }
-    fclose(fp);
-    return 0;
-}
-
-int custCmp(const SCustomer *c1, const SCustomer *c2)
-{
-    return strcmp(c1->accountNumber, c2->accountNumber) == 0;
-}
-
-int alreadyExists(const SCustomer *customer)
-{
-    FILE *fp;
-    fp = fopen(DB_FILENAME, "rb");
-    if (!fp)
-        return 0;
-    int result = 0;
-    SCustomer custFromFile;
-    while (fread(&custFromFile, sizeof(SCustomer), 1, fp) == 1)
-    {
-        if (custCmp(&custFromFile, customer))
+        if (isThatIt(found, target))
         {
             result = 1;
             break;
@@ -141,6 +119,33 @@ int alreadyExists(const SCustomer *customer)
     }
     fclose(fp);
     return result;
+}
+
+int nameFind(const SCustomer *cust, const void *target)
+{
+    return strcmp(cust->name, (const char *)target) == 0;
+}
+int surnameFind(const SCustomer *cust, const void *target)
+{
+    return strcmp(cust->surname, (const char *)target) == 0;
+}
+int addressFind(const SCustomer *cust, const void *target)
+{
+    return strcmp(cust->address, (const char *)target) == 0;
+}
+int PESELFind(const SCustomer *cust, const void *target)
+{
+    return strcmp(cust->PESEL, (const char *)target) == 0;
+}
+int accNumFind(const SCustomer *cust, const void *target)
+{
+    return strcmp(cust->accountNumber, (const char *)target) == 0;
+}
+
+int alreadyExists(const SCustomer *cust)
+{
+    SCustomer dummy;
+    return findInDb(&dummy, cust->accountNumber, accNumFind) == 1;
 }
 
 int saveNewCustomer(const SCustomer *customer)
@@ -161,7 +166,6 @@ int saveNewCustomer(const SCustomer *customer)
 
 void listAll()
 {
-    printf("N\tNAME\tSURNAME\tADDRESS\tPESEL\t\tACCOUNT NUMBER\n");
     FILE *fp;
     fp = fopen(DB_FILENAME, "rb");
     if (!fp)
@@ -176,6 +180,11 @@ void listAll()
         custNum++;
     }
     fclose(fp);
+}
+
+void printHeader()
+{
+    printf("N\tNAME\tSURNAME\tADDRESS\tPESEL\t\tACCOUNT NUMBER\n");
 }
 
 void printCustomer(const SCustomer *customer)
