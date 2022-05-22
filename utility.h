@@ -3,7 +3,13 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 char *readline();
+char *rmNewline(char *line);
+char *validatedInput(const char *prompt, size_t maxLen, int (*validator)(const char *input));
+
+// http://www.cse.yorku.ca/~oz/hash.html
+unsigned long hash(char *str);
 
 #endif
