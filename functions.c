@@ -19,6 +19,33 @@ int transfer(SCustomer *from, SCustomer *to, double amount) { return 0; }
 int canChangeBalanceBy(const SCustomer *customer, double amount) { return 0; }
 /* ------------ */
 
+void getNewCustomerData(SCustomer *newCustomer)
+{
+    char *line;
+    printf("New account creator:\n");
+    printf("Please fill customer data below.\n");
+
+    line = validatedInput("Name", NAME_LENGTH, validateNameSurname);
+    memcpy(newCustomer->name, line, NAME_LENGTH + 1);
+    free(line);
+    line = NULL;
+
+    line = validatedInput("Surname", SURNAME_LENGTH, validateNameSurname);
+    memcpy(newCustomer->surname, line, SURNAME_LENGTH + 1);
+    free(line);
+    line = NULL;
+
+    line = validatedInput("Address", ADDRESS_LENGTH, validateAddress);
+    memcpy(newCustomer->address, line, ADDRESS_LENGTH + 1);
+    free(line);
+    line = NULL;
+
+    line = validatedInput("PESEL", PESEL_LENGTH, validatePESEL);
+    memcpy(newCustomer->PESEL, line, PESEL_LENGTH + 1);
+    free(line);
+    line = NULL;
+}
+
 char *rmNewline(char *line)
 {
     size_t length = strlen(line);
@@ -45,6 +72,18 @@ char *validatedInput(const char *prompt, size_t maxLen, int (*validator)(const c
                                              || (strlen(line) - 1) > maxLen));
 
     return rmNewline(line);
+}
+
+unsigned long
+hash(char *str)
+{
+    unsigned long hash = 5381;
+    int c;
+
+    while (c = *str++)
+        hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+
+    return abs(hash);
 }
 
 int validateNameSurname(const char *input)

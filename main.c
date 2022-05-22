@@ -10,7 +10,7 @@ int main()
 {
 	char *line;
 	int option;
-	while (1)
+	while (option != 7)
 	{
 		printf("Banking system\n");
 		printf("Available operations:\n");
@@ -33,35 +33,15 @@ int main()
 		{
 		case 1:
 		{
-			char accountNumber[ACCOUNT_NUMBER_LENGTH + 1];
-			char name[NAME_LENGTH + 1];
-			char surname[SURNAME_LENGTH + 1];
-			char address[ADDRESS_LENGTH + 1];
-			char PESEL[PESEL_LENGTH + 1];
-			printf("New account creator:\n");
-			printf("Please fill customer data below.\n");
-
-			line = validatedInput("Name", NAME_LENGTH, validateNameSurname);
-			memcpy(name, line, NAME_LENGTH + 1);
-			free(line);
-			line = NULL;
-
-			line = validatedInput("Surname", SURNAME_LENGTH, validateNameSurname);
-			memcpy(surname, line, SURNAME_LENGTH + 1);
-			free(line);
-			line = NULL;
-
-			line = validatedInput("Address", ADDRESS_LENGTH, validateAddress);
-			memcpy(address, line, ADDRESS_LENGTH + 1);
-			free(line);
-			line = NULL;
-
-			line = validatedInput("PESEL", PESEL_LENGTH, validatePESEL);
-			memcpy(PESEL, line, PESEL_LENGTH + 1);
-			free(line);
-			line = NULL;
+			SCustomer newCustomer;
+			getNewCustomerData(&newCustomer);
+			sprintf(newCustomer.accountNumber, "%lu", hash(newCustomer.PESEL));
+			// saveToFile(&newCustomer); // TODO
 		}
 		break;
+
+		case 7:
+			break;
 
 		default:
 			printf("Invaild input.\n");
