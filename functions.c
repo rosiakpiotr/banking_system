@@ -35,7 +35,22 @@ int validatePESEL(const char *input)
     }
     return count == 11;
 }
-int findInDb(SCustomer *found, const void *target, int (*isThatIt)(const SCustomer *cust, const void *target))
+
+int validateAccNum(const char *input)
+{
+    int count = 0;
+    while (*(input + count) && *(input + count) != '\n')
+    {
+        if (!isdigit(*(input + count)))
+        {
+            return 0;
+        }
+        ++count;
+    }
+    return count == 9;
+}
+
+int findInDb(SCustomer *found, const void *target, isThatIt comparator)
 {
     FILE *fp;
     fp = fopen(DB_FILENAME, "rb");
@@ -44,7 +59,7 @@ int findInDb(SCustomer *found, const void *target, int (*isThatIt)(const SCustom
     int result = 0;
     while (fread(found, sizeof(SCustomer), 1, fp) == 1)
     {
-        if (isThatIt(found, target))
+        if (comparator(found, target))
         {
             result = 1;
             break;

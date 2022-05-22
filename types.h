@@ -3,6 +3,11 @@
 
 #include "constants.h"
 
+struct SCustomer;
+
+typedef int (*validator)(const char *input);
+typedef int (*isThatIt)(const struct SCustomer *c, const void *target);
+
 typedef struct SCustomer
 {
 	// Char arrays have defined length for any use and

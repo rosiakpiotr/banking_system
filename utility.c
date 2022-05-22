@@ -76,7 +76,7 @@ char *rmNewline(char *line)
     return buf;
 }
 
-char *validatedInput(const char *prompt, size_t maxLen, int (*validator)(const char *input))
+char *validatedInput(const char *prompt, size_t maxLen, validator valid)
 {
     char *line = NULL;
     do
@@ -84,7 +84,7 @@ char *validatedInput(const char *prompt, size_t maxLen, int (*validator)(const c
         printf("%s:", prompt);
         free(line);
         line = NULL;
-    } while ((line = readline()) != NULL && (!validator(line)
+    } while ((line = readline()) != NULL && (!valid(line)
                                              /* Subtracting newline character */
                                              || (strlen(line) - 1) > maxLen));
 

@@ -16,7 +16,7 @@ int alreadyExists(const SCustomer *cust);
 
 // account number, name, surname, address,
 // identification number
-int findInDb(SCustomer *found, const void *target, int (*isThatIt)(const SCustomer *cust, const void *target));
+int findInDb(SCustomer *found, const void *target, isThatIt comparator);
 int nameFind(const SCustomer *cust, const void *target);
 int surnameFind(const SCustomer *cust, const void *target);
 int addressFind(const SCustomer *cust, const void *target);
@@ -32,6 +32,7 @@ int canChangeBalanceBy(const SCustomer *customer, double amount);
 int validateNameSurname(const char *input);
 int validateAddress(const char *input);
 int validatePESEL(const char *input);
+int validateAccNum(const char *input);
 
 int saveNewCustomer(const SCustomer *customer);
 

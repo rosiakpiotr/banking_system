@@ -45,9 +45,6 @@ void getNewCustomerData(SCustomer *newCustomer)
 
 void menuSearch()
 {
-    char *line;
-    int option;
-
     printf("\n\n");
     printf("Search for a customer by:\n");
     printf("1. Name\n");
@@ -57,41 +54,89 @@ void menuSearch()
     printf("5. Account number\n");
     printf("6. Return\n");
 
-    do
-    {
-        printf("Choice: ");
-        line = readline();
-        if (!line)
-            break;
-        option = strtol(line, NULL, 10);
-        free(line);
-        line = NULL;
-    } while (option < 1 || option > 6);
-    free(line);
-    line = NULL;
+    int option = getInputNumInRangeInt("Choice", 1, 6);
 
     SCustomer customer;
-    int result;
     switch (option)
     {
     case 1:
-    {
-        line = validatedInput("Name", NAME_LENGTH, validateNameSurname);
-        char name[NAME_LENGTH + 1];
-        memcpy(name, line, NAME_LENGTH + 1);
-        free(line);
-        line = NULL;
-        result = findInDb(&customer, name, nameFind);
-        if (result == 1)
-        {
-            printf("Customer:\n");
-            printHeader();
-            printf("1\t");
-            printCustomer(&customer);
-            printf("\n");
-        }
+        menuSearchBy("Name", NAME_LENGTH, validateNameSurname, nameFind, &customer);
+        break;
+
+    case 2:
+        menuSearchBy("Surname", SURNAME_LENGTH, validateNameSurname, surnameFind, &customer);
+        break;
+
+    case 3:
+        menuSearchBy("Address", ADDRESS_LENGTH, validateAddress, addressFind, &customer);
+        break;
+
+    case 4:
+        menuSearchBy("PESEL", PESEL_LENGTH, validatePESEL, PESELFind, &customer);
+        break;
+
+    case 5:
+        menuSearchBy("Account number", ACCOUNT_NUMBER_LENGTH, validateAccNum, accNumFind, &customer);
+        break;
     }
+}
+
+int menuSearchBy(const char *byWhat, size_t maxInputLen, validator inputValidator, isThatIt searchComparator, SCustomer *found)
+{
+    char *line;
+    int result;
+
+    line = validatedInput(byWhat, maxInputLen, inputValidator);
+    char field[maxInputLen + 1];
+    memcpy(field, line, maxInputLen + 1);
+    free(line);
+    line = NULL;
+    result = findInDb(found, field, searchComparator);
+    if (result == 1)
+    {
+        printf("Found customer(it will be selected for next operations):\n");
+        printHeader();
+        printf("1\t");
+        printCustomer(found);
+        printf("\n");
+    }
+    else if (result == 0)
+    {
+        printf("No customer found.\n");
     }
 
-    free(line);
+    return result;
+}
+
+int getInputNumInRangeInt(const char *prompt, int bottom, int upper)
+{
+    char *line;
+    int num;
+    do
+    {
+        printf("%s: ", prompt);
+        line = readline();
+        if (!line)
+            break;
+        num = strtol(line, NULL, 10);
+        free(line);
+        line = NULL;
+    } while (num < bottom || num > upper);
+    return num;
+}
+double getInputNumInRangeDouble(const char *prompt, double bottom, double upper)
+{
+    char *line;
+    double num;
+    do
+    {
+        printf("%s: ", prompt);
+        line = readline();
+        if (!line)
+            break;
+        num = strtod(line, NULL);
+        free(line);
+        line = NULL;
+    } while (num < bottom || num > upper);
+    return num;
 }
