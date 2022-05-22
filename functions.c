@@ -114,3 +114,59 @@ int validatePESEL(const char *input)
     }
     return count == 11;
 }
+
+int findByName(const char *name, SCustomer *found)
+{
+    FILE *fp;
+    fp = fopen(DB_FILENAME, "rb");
+    if (!fp)
+        return -1;
+    while (fread(found, sizeof(SCustomer), 1, fp) == 1)
+    {
+        if (strcmp(name, found->name) == 0)
+            return 1;
+    }
+    fclose(fp);
+    return 0;
+}
+
+int custCmp(const SCustomer *c1, const SCustomer *c2)
+{
+    return strcmp(c1->accountNumber, c2->accountNumber) == 0;
+}
+
+int alreadyExists(const SCustomer *customer)
+{
+    FILE *fp;
+    fp = fopen(DB_FILENAME, "rb");
+    if (!fp)
+        return 0;
+    int result = 0;
+    SCustomer custFromFile;
+    while (fread(&custFromFile, sizeof(SCustomer), 1, fp) == 1)
+    {
+        if (custCmp(&custFromFile, customer))
+        {
+            result = 1;
+            break;
+        }
+    }
+    fclose(fp);
+    return result;
+}
+
+int saveNewCustomer(const SCustomer *customer)
+{
+    if (alreadyExists(customer))
+        return CUSTOMER_ALREADY_EXISTS;
+    FILE *fp;
+    fp = fopen(DB_FILENAME, "ab");
+    if (!fp)
+    {
+        perror("Error during initialization of database file.");
+        return 0;
+    }
+    int result = fwrite(customer, sizeof(SCustomer), 1, fp);
+    fclose(fp);
+    return result;
+}

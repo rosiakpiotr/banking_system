@@ -13,7 +13,9 @@ void listAll();
 
 char *generateAccNum();
 
-int saveAccount(const SCustomer *data);
+int custCmp(const SCustomer *c1, const SCustomer *c2);
+int alreadyExists(const SCustomer *cust);
+int findByName(const char *name, SCustomer *found);
 
 // searchByAccNum(accnum);
 // searchByName(name);

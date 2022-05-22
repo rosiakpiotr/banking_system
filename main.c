@@ -36,7 +36,15 @@ int main()
 			SCustomer newCustomer;
 			getNewCustomerData(&newCustomer);
 			sprintf(newCustomer.accountNumber, "%lu", hash(newCustomer.PESEL));
-			// saveToFile(&newCustomer); // TODO
+			int result = saveNewCustomer(&newCustomer);
+			if (result == 1)
+			{
+				printf("New customer added.\n");
+			}
+			else if (result == CUSTOMER_ALREADY_EXISTS)
+			{
+				printf("Customer already exists.\n");
+			}
 		}
 		break;
 

@@ -7,6 +7,12 @@
 #define PESEL_LENGTH 11
 #define ACCOUNT_NUMBER_LENGTH 20
 
-#define FILENAME "clients.dat"
+#define DB_FILENAME "clients.dat"
+
+// Custom error codes
+typedef enum
+{
+    CUSTOMER_ALREADY_EXISTS = 0x2
+} ERROR_CODES;
 
 #endif
