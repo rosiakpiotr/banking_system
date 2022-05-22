@@ -142,6 +142,27 @@ double getInputNumInRangeDouble(const char *prompt, double bottom, double upper)
     return num;
 }
 
+int confirmTransfer(const SCustomer *from, const SCustomer *to, double amount)
+{
+    printf("Are you sure you want to transfer %.2f?\n", amount);
+    printHeader();
+    printf("FROM\t");
+    printCustomer(from);
+    printf("\nTO\t");
+    printCustomer(to);
+    printf("\n\n");
+    return getInputNumInRangeInt("Type 1 to confirm 0 to abort", 0, 1);
+}
+int confirmBalanceChange(const SCustomer *customer, double amount)
+{
+    printf("Are you sure you want to change balance by %.2f on this account?\n", amount);
+    printHeader();
+    printf("1\t");
+    printCustomer(customer);
+    printf("\n\n");
+    return getInputNumInRangeInt("Type 1 to confirm 0 to abort", 0, 1);
+}
+
 int menuMoneyTransfer()
 {
     printf("Money transfer\n");
@@ -184,24 +205,18 @@ int menuMoneyTransfer()
     }
 
     printf("\n\n");
-    printf("Are you sure you want to transfer %.2f?\n", amount);
-    printHeader();
-    printf("FROM\t");
-    printCustomer(&from);
-    printf("\nTO\t");
-    printCustomer(&to);
-    printf("\n\n");
-    int confirm = getInputNumInRangeInt("Type 1 to confirm 0 to abort", 0, 1);
+
     int fail = 0;
+    int confirm = confirmTransfer(&from, &to, amount);
     if (confirm)
     {
         from.balance -= amount;
         to.balance += amount;
-        if (fail || !updateCustomer(&from))
+        if (fail || updateCustomer(&from) != 1)
         {
             fail = 1;
         }
-        if (fail || !updateCustomer(&to))
+        if (fail || updateCustomer(&to) != 1)
         {
             fail = 1;
         }
@@ -225,6 +240,80 @@ int menuMoneyTransfer()
     printCustomer(&from);
     printf("\nTO\t");
     printCustomer(&to);
+
+    return fail;
+}
+
+int menuDeposit()
+{
+    printf("Deposits\n");
+    printf("Select customer.\n");
+    SCustomer customer;
+    int result;
+    result = menuSearch(&customer);
+    if (result != 1)
+    {
+        printf("Aborting.\n");
+        return 0;
+    }
+
+    printf("\n");
+    double amount = getInputNumInRangeDouble("Amount(0-10e15)", 0, 10e15);
+    int confirm = confirmBalanceChange(&customer, amount);
+    int fail = 0;
+    if (confirm)
+    {
+        customer.balance += amount;
+        fail = updateCustomer(&customer) != 1;
+    }
+
+    if (fail)
+    {
+        customer.balance -= amount;
+        printf("Deposit failed, balance will remain unchanged\n");
+    }
+
+    printf("\nCurrent state:\n");
+    printHeader();
+    printf("1\t");
+    printCustomer(&customer);
+
+    return fail;
+}
+
+int menuWithdraw()
+{
+    printf("Withdrawals\n");
+    printf("Select customer.\n");
+    SCustomer customer;
+    int result;
+    result = menuSearch(&customer);
+    if (result != 1)
+    {
+        printf("Aborting.\n");
+        return 0;
+    }
+
+    printf("\n");
+    double amount = getInputNumInRangeDouble("Amount", 0, customer.balance);
+    int confirm = confirmBalanceChange(&customer, amount);
+    int fail = 0;
+    if (confirm)
+    {
+        customer.balance -= amount;
+        fail = updateCustomer(&customer) != 1;
+    }
+
+    if (fail)
+    {
+        customer.balance += amount;
+        printf("Withdraw failed, balance will remain unchanged\n");
+    }
+
+    printf("\nCurrent state:\n");
+    printHeader();
+    printf("1\t");
+    printCustomer(&customer);
 
     return fail;
 }

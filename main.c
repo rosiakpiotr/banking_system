@@ -40,6 +40,14 @@ int main()
 		case 4:
 			menuMoneyTransfer();
 			break;
+
+		case 5:
+			menuDeposit();
+			break;
+
+		case 6:
+			menuWithdraw();
+			break;
 		default:
 			break;
 		}
