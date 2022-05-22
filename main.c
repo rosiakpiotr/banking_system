@@ -8,8 +8,7 @@
 
 int main()
 {
-	char *line;
-	int option;
+	int option = 0;
 	while (option != 7)
 	{
 		printf("Banking system\n");
@@ -23,44 +22,28 @@ int main()
 		printf("7. Quit\n");
 		printf("Type in option number:");
 
-		line = readline();
-		if (!line)
-			break;
-		option = strtol(line, NULL, 10);
-		free(line);
-		line = NULL;
+		option = getInputNumInRangeInt("Option", 1, 7);
 		switch (option)
 		{
 		case 1:
-		{
 			menuAddNewCustomer();
-		}
-		break;
+			break;
 
 		case 2:
-		{
 			listAll();
-		}
-		break;
+			break;
 
 		case 3:
-		{
 			menuSearch();
-		}
-		break;
-
-		case 7:
 			break;
 
 		default:
-			printf("Invaild input.\n");
 			break;
 		}
 
 		printf("\n\n\n");
 	}
 
-	free(line);
 	printf("Goodbye!\n");
 	return 0;
 }
