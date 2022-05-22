@@ -6,6 +6,7 @@
 #include <string.h>
 #include "utility.h"
 #include "types.h"
+#include "constants.h"
 
 /* MODEL OPERATIONS */
 void listAll();
@@ -38,5 +39,9 @@ unsigned long hash(char *str);
 int validateNameSurname(const char *input);
 int validateAddress(const char *input);
 int validatePESEL(const char *input);
+
+/* FILE OPERATIONS */
+int saveNewCustomer(const SCustomer *customer);
+/* ------------ */
 
 #endif

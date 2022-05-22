@@ -8,7 +8,7 @@ bank: main.o functions.o utility.o
 
 main.o: main.c functions.h utility.h types.h
 
-functions.o: functions.h functions.c
+functions.o: functions.h functions.c constants.h
 
 utility.o: utility.h utility.c
 

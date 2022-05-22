@@ -1,11 +1,7 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-#define NAME_LENGTH 20
-#define SURNAME_LENGTH 20
-#define ADDRESS_LENGTH 25
-#define PESEL_LENGTH 11
-#define ACCOUNT_NUMBER_LENGTH 20
+#include "constants.h"
 
 typedef struct SCustomer
 {
