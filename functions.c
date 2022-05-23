@@ -1,12 +1,5 @@
 #include "functions.h"
 
-void makeDeposit(SCustomer *customer, double amount) {}
-int withdraw(SCustomer *customer, double amount) { return 0; }
-int transfer(SCustomer *from, SCustomer *to, double amount) { return 0; }
-
-int canChangeBalanceBy(const SCustomer *customer, double amount) { return 0; }
-/* ------------ */
-
 int custCmp(const SCustomer *c1, const SCustomer *c2)
 {
     return strcmp(c1->accountNumber, c2->accountNumber) == 0;
